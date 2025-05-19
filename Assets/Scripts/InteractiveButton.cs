@@ -7,6 +7,7 @@ public class InteractiveButton : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private RectTransform _rectTransform;
     [SerializeField] private float _highlightSize = 1.2f;
     [SerializeField] private float _highlightDuration = .2f;
+    [SerializeField] private Ease _easeIn = Ease.InCubic;
 
     void Awake()
     {
@@ -22,11 +23,11 @@ public class InteractiveButton : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void OnPointerEnter(PointerEventData eventData)
     {
         Tween.Scale(
-            _rectTransform, 
-            new Vector3(_highlightSize,1,1), 
+            _rectTransform,
+            Vector3.one * _highlightSize,
             _highlightDuration,
-            Ease.InBounce);
-        
+            _easeIn);
+
     }
 
     public void OnPointerExit(PointerEventData eventData)
