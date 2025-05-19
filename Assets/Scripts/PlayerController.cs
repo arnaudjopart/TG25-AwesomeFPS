@@ -1,4 +1,6 @@
 using System;
+using PrimeTween;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +12,11 @@ public class PlayerController : MonoBehaviour
     private Vector3 _moveDirection;
     private Vector2 _inputValue;
     [SerializeField] private float _moveSpeed = 2f;
+    private bool groundedPlayer;
+    private Vector2 playerVelocity;
+    private float jumpHeight =2f;
+    [SerializeField] private float gravityValue =9.1f;
+    private bool _isJumping;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -17,7 +24,7 @@ public class PlayerController : MonoBehaviour
         _camera = Camera.main;
         _characterController = GetComponent<CharacterController>();
         
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Start()
@@ -41,7 +48,32 @@ public class PlayerController : MonoBehaviour
         
         //var moveVector = _inputValue.x*transform.right+_inputValue.y*transform.forward;
         var moveVector = transform.TransformDirection(new Vector3(_inputValue.x, 0, _inputValue.y));
-        _characterController.SimpleMove(moveVector*_moveSpeed);
+        //_characterController.SimpleMove(moveVector*_moveSpeed);
+        
+        groundedPlayer = _characterController.isGrounded;
+        if (groundedPlayer && playerVelocity.y < 0)
+        {
+            playerVelocity.y = 0f;
+        }
+
+        // Horizontal input
+        Vector3 move = moveVector;
+        move = Vector3.ClampMagnitude(move, 1f); // Optional: prevents faster diagonal movement
+
+
+        // Jump
+        if (_isJumping && groundedPlayer)
+        {
+            _isJumping = false;
+            playerVelocity.y = Mathf.Sqrt(jumpHeight * -2.0f * gravityValue);
+        }
+
+        // Apply gravity
+        playerVelocity.y += gravityValue * Time.deltaTime;
+
+        // Combine horizontal and vertical movement
+        Vector3 finalMove = (move * _moveSpeed) + (playerVelocity.y * Vector3.up);
+        _characterController.Move(finalMove * Time.deltaTime);
         
     }
 
@@ -50,5 +82,15 @@ public class PlayerController : MonoBehaviour
     {
         _inputValue = ctx.ReadValue<Vector2>();
         
+    }
+
+    public void OnShoot(InputAction.CallbackContext ctx)
+    {
+        GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+    }
+
+    public void OnJump(InputAction.CallbackContext ctx)
+    {
+        if(ctx.performed)_isJumping = true;
     }
 }
