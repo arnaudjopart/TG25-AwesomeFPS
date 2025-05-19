@@ -10,35 +10,37 @@ public class MainMenu : MonoBehaviour
     [SerializeField] Button _playButton;
     [SerializeField] private float _duration =.5f;
     [SerializeField] private Image _fadeOutImage;
+    private Sequence _sequence;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
-        _rectTransform.anchoredPosition = new Vector2(-700, 0);
+        _rectTransform.position = Vector3.left * _rectTransform.rect.width;
     }
 
     private void Start()
     {
+        _playButton.onClick.AddListener(OnPlayButtonClicked);
+
         Tween.UIAnchoredPosition(
-            _rectTransform, 
-            Vector2.zero, 
+            _rectTransform,
+            Vector2.zero,
             _duration,
             Ease.OutBounce,
-            1,CycleMode.Restart,.5f);
-        _playButton.onClick.AddListener(OnPlayButtonClicked);
+            startDelay: .5f);
     }
 
     private void OnPlayButtonClicked()
     {
         var sequence = Sequence.Create();
         sequence.Chain(
-        Tween.UIAnchoredPosition(
-            _rectTransform, 
-            new Vector2(-700,0),
-            _duration,
-            Ease.Default));
-        sequence.Chain(Tween.Alpha(_fadeOutImage, 1,1f)); 
+            Tween.UIAnchoredPosition(
+                _rectTransform, 
+                new Vector2(-700,0),
+                _duration,
+                Ease.Default));
+        sequence.Chain(Tween.Alpha(_fadeOutImage, 1,2f)); 
         sequence.OnComplete(LoadNextLevel);
     }
 

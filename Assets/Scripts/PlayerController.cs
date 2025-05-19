@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,7 +16,19 @@ public class PlayerController : MonoBehaviour
     {
         _camera = Camera.main;
         _characterController = GetComponent<CharacterController>();
+        
         //Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    private void Start()
+    {
+        var gameplayMap = GetComponent<PlayerInput>().actions.FindActionMap("Player");  
+        Debug.Log(gameplayMap.name);
+        
+        gameplayMap.Disable();
+        var uiMap = GetComponent<PlayerInput>().actions.FindActionMap("UI");  
+        uiMap.Enable();
+        Debug.Log(uiMap.name);
     }
 
     // Update is called once per frame
