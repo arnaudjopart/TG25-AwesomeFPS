@@ -21,14 +21,19 @@ public class InteractiveButton : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("OnPointerEnter");
-        Tween.Scale(_rectTransform, Vector3.one*_highlightSize, _highlightDuration);
+        Tween.Scale(
+            _rectTransform, 
+            new Vector3(_highlightSize,1,1), 
+            _highlightDuration,
+            Ease.InBounce);
         
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("OnPointerExit");
-        Tween.Scale(_rectTransform, Vector3.one, _highlightDuration);
+        Tween.Scale(
+            _rectTransform, 
+            Vector3.one, 
+            _highlightDuration);
     }
 }
