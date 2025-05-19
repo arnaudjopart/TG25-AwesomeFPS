@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     {
         _camera = Camera.main;
         _characterController = GetComponent<CharacterController>();
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
